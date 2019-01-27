@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1031766502564",
+    "firebase_url": "https://flutter-ally.firebaseio.com",
+    "project_id": "flutter-ally",
+    "storage_bucket": "flutter-ally.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031766502564:android:3d2bd876906a1445",
+        "android_client_info": {
+          "package_name": "com.sentryprime.flutterapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031766502564-b5od0pg8b6mq5o7furghtd1pus0tqq7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnzikFU0gkgk8j8s19sc4zS_kyU5e4z4Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

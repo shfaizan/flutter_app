@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'LoginRegisterPage.dart';
+import 'package:flutter_app/Mapping.dart';
+import 'Authentication.dart';
 
 void main()
 {
@@ -20,7 +21,7 @@ class Fz_ally extends StatelessWidget{
 
               ),
 
-            home: LoginRegisterPage(),
+            home: MappingPage(auth: Auth(),),
 
         );
   }

@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'Authentication.dart';
+
 
 class LoginRegisterPage extends StatefulWidget
 {
+  LoginRegisterPage
+  ({
+      this.auth,
+      this.onSignedIn,
+   });
+  final AuthImplementation auth;
+  final VoidCallback onSignedIn;
+
     State<StatefulWidget> createState()
     {
         return _LoginRegisterState();
@@ -11,53 +21,94 @@ class LoginRegisterPage extends StatefulWidget
     enum FormType
     {
         login,
-        register
+        register,
     }
 
 
 class _LoginRegisterState extends State<LoginRegisterPage>
 {
-    //methods
-     void validateAndSave()
-     {
+  final formKey = new GlobalKey<FormState>();
+  FormType _formType = FormType.login;
+  String _email = "";
+  String _password = "";
 
-     }
+  //methods
+  bool validateAndSave() {
+    final form = formKey.currentState;
 
-     void moveToRegister()
-     {
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
-     }
+  void validateAndSubmit() async
+  {
+    if (validateAndSave()) {
+      try {
+        if (_formType == FormType.login) {
+          String userId = await widget.auth.SignIn(_email, _password);
+          print("login userId = " + userId);
+        }
+        else {
+          String userId = await widget.auth.SignUp(_email, _password);
+          print("Register userId = " + userId);
+        }
+
+        widget.onSignedIn();
+      }
+      catch (e) {
+        print("Error = " + e.toString());
+      }
+    }
+  }
+
+  void moveToRegister() {
+    formKey.currentState.reset();
+
+    setState(() {
+      _formType = FormType.register;
+    });
+  }
+
+  void moveToLogin() {
+    formKey.currentState.reset();
+
+    setState(() {
+      _formType = FormType.login;
+    });
+  }
 
 
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold
+      (
+      appBar: new AppBar
+        (
+        title: new Text("Fz Ally "),
+      ),
 
+      body: new Container
+        (
+        margin: EdgeInsets.all(15.0),
 
-
-     @override
-  Widget build(BuildContext context)
-     {
-        return new Scaffold
+        child: new Form
           (
-              appBar: new AppBar
-                (
-                    title: new Text("Fz Ally "),
-                ),
+            key: formKey,
+            child: new Column
+              (
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: createinputs() + createButtons(),
 
-              body: new Container
-                (
-                    margin: EdgeInsets.all(15.0),
-
-                    child: new Form
-                      (
-                         child: new Column
-                           (
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: createinputs() + createButtons(),
-
-                           )
-                      ),
-                ),
-          );
-     }
+            )
+        ),
+      ),
+    );
+  }
 
 
 
@@ -72,11 +123,32 @@ class _LoginRegisterState extends State<LoginRegisterPage>
               new TextFormField
                 (
                     decoration: new InputDecoration(labelText: 'Email'),
+
+                          validator: (value)
+                          {
+                            return value.isEmpty ? 'Email is required.' : null;
+                          },
+
+                          onSaved: (value)
+                          {
+                            return _email = value;
+                          },
               ),
               SizedBox(height: 10.0,),
               new TextFormField
                 (
                 decoration: new InputDecoration(labelText: 'Password'),
+                      obscureText: true,
+                      validator: (value)
+                      {
+                        return value.isEmpty ? 'Password is required.' : null;
+                      },
+
+                      onSaved: (value)
+                      {
+                        return _password = value;
+                      },
+
               ),
               SizedBox(height: 20.0,),
           ];
@@ -96,22 +168,46 @@ class _LoginRegisterState extends State<LoginRegisterPage>
      }
      List<Widget> createButtons()
      {
-       return
-         [
-              new RaisedButton
-                (
-                    child: new Text("Login",style: new TextStyle(fontSize: 20.0),),
-                    textColor: Colors.white,
-                    color: Colors.pink,
+       if(_formType == FormType.login)
+         {
+           return
+             [
+               new RaisedButton
+                 (
+                 child: new Text("Login",style: new TextStyle(fontSize: 20.0),),
+                 textColor: Colors.white,
+                 color: Colors.pink,
 
-                    onPressed: validateAndSave,
-              ),
-              new FlatButton
-                (
-                child: new Text("Not have an Account? Create Account?",style: new TextStyle(fontSize: 14.0),),
-                textColor: Colors.white,
-                onPressed: moveToRegister,
-              ),
-         ];
+                 onPressed: validateAndSave,
+               ),
+               new FlatButton
+                 (
+                 child: new Text("Not have an Account? Create Account?",style: new TextStyle(fontSize: 14.0),),
+                 textColor: Colors.red,
+                 onPressed: moveToRegister,
+               ),
+             ];
+         }
+
+         else
+           {
+             return
+               [
+                 new RaisedButton
+                   (
+                   child: new Text("Create Account",style: new TextStyle(fontSize: 20.0),),
+                   textColor: Colors.white,
+                   color: Colors.pink,
+
+                   onPressed: validateAndSubmit,
+                 ),
+                 new FlatButton
+                   (
+                   child: new Text("Already have an Account? Login",style: new TextStyle(fontSize: 14.0),),
+                   textColor: Colors.red,
+                   onPressed: moveToLogin,
+                 ),
+               ];
+           }
      }
 }
